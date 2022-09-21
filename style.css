@@ -59,12 +59,19 @@ background: linear-gradient(0deg, rgba(50,50,59,1) 40%, rgba(76,103,87,1) 100%);
 }
 
 .output{
+    font-size: 40px;
+    color: rgb(140, 255, 236);
+    letter-spacing: 1px;
+    font-weight:100;
+    text-shadow: 0 0 20px rgba(122, 255, 226, 0.61);
+    /* text-justify:newspaper; */
+    
 }
 
 .keyboard{
     display: flex;
     flex: 0.66;  
-    margin: 10px; 
+    margin: 10px;
 }
 
 .keyboard-numbers, .keyboard-functions{
