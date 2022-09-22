@@ -1,10 +1,9 @@
 
 const output = document.querySelector('.output');
-// const regex = / x /;
+const userInput = [];
 
 let dotBool = false;
 let operatorBool = false;
-const userInput = [];
 let argument1 = '';
 let userOperator = '';
 let argument2 = '';
@@ -27,52 +26,35 @@ function operate(arg1,arg2,operator){
 }
 
 function inputCall(){
-
-    //Check if input is a digit using RegEx and check max digit length
-    if(/\d/.test(this.innerText) && output.innerHTML.length <=14){        
-        userInput.push(this.innerText);
-    }
-
-    //Only one dot can be used
-    else if (this.innerText == '.' && dotBool == false){
-        dotBool = true;
-        userInput.push(this.innerText);
-    }
-
-    //Check for x ÷ - and + operators
-    else if(/x|÷|-|\+/.test(this.innerText) && !operatorBool){
-
-        operatorBool = true;
-
-        if(this.innerText == 'x'){
-            userOperator = '*';
-        }else if(this.innerText == '÷'){
-            userOperator = '/';
-        }
-        else{
-            userOperator = this.innerText;            
-        } 
-
-        dotBool = false;
-        argument1 = userInput.join('');
-        userInput.push(this.innerText);     
-    }
-
-    //Check for Del, Clear and =
-    else if(/Del|Clear|=/.test(this.innerText)){
-        console.log(this.innerText);
-    }
     
-    
-    
-    else{
-        console.log('Go NaN yourfelf'); 
-    }
+    let currentInput = this.innerText;                                                                                                                                                                   //store current input
 
-    output.innerText = userInput.join(''); 
+    (/\d/.test(currentInput) && output.innerHTML.length <=14) ? userInput.push(currentInput)                                                                                                             //Check if input is a digit using RegEx and check max digit length, store it
+   :(currentInput == '.' && dotBool == false)       ? (dotBool = true, userInput.push(currentInput))                                                                                                     //Check if input is a dot, prevent more than one dot per argument, store it
+   :(/x÷-|\+/.test(currentInput) && !operatorBool)    ? setOperator(currentInput)      //( argument1 = userInput.join(''), userInput.push(' ' + currentInput + ' '), userOperator = currentInput)      //Check for operators - & +
+   //:(currentInput=='x' && !operatorBool)            ?       //( argument1 = userInput.join(''), userInput.push(' ' + currentInput + ' '), userOperator = '*')               //Check separately for x operator and transfer it as *
+   //:(currentInput=='÷' && !operatorBool)            ?       //( argument1 = userInput.join(''), userInput.push(' ' + currentInput + ' '), userOperator = '/')               //Check separately for ÷ operator and transfer it as /
+   :(/Del|Clear|=/.test(currentInput))              ?  correction(currentInput)                                                                                                                          //Check for clearing /deleting operations --> Call function with
+   :console.log('Go NaN yourfelf');                                                                                                                                                                      //else
+
+    output.innerText = userInput.join('');                                                                                                                                                               //display full input so far
 }
 
-function operationCall(){
+function correction(corrType){
+    corrType == 'Del' ? (userInput.pop(), output.innerText = userInput.join(''))
+   :corrType == 'Clear' ? (userInput.length = 0, dotBool = false, operatorBool = false)//userInput.forEach(element) {userInput.remove(element)};
+   :(console.log('error'));
+}
+
+function setOperator(arg){
+    dotBool = false;
+    operatorBool = true;
+    argument1 = userInput.join(''), userInput.push(' ' + arg + ' ');
+    (arg == '+' || qrg == '-') ? userOperator = arg
+    :arg == 'x' ? userOperator = '*'
+    :arg == '÷' ? userOperator = '/'
+    :console.log('setOperator error');
+
 }
 
 const inputKeys = document.querySelectorAll('.key');
