@@ -1,19 +1,16 @@
 const output = document.querySelector('.output');
-const userInput = [];
+const inputKeys = document.querySelectorAll('.number');
+inputKeys.forEach((key) => key.addEventListener('click', inputCall));
+const operatingKeys = document.querySelectorAll('.operator');
+operatingKeys.forEach((key) => key.addEventListener('click', operationCall));
 
-let argsIndex = 0;
 let operator = '';
 let nextOperator = '';
 let CPUoperator = '';
-let argument1 = {
-    number : [],
-    dotUsed : false,
-};
-let argument2 = {
-    number : [],
-    dotUsed : false,
-};
 let result = 0.0;
+let argsIndex = 0;
+let argument1 = {number : [],dotUsed : false,};
+let argument2 = {number : [],dotUsed : false,};
 let args = [ argument1, argument2];
 
 //Calculator
@@ -25,24 +22,25 @@ function operate(arg1,arg2){                        //recieve two values
     :CPUoperator == '/' ? result = arg1 / arg2
     :result = 'error';
 
+    let roundedResult = Math.round(result * 100) / 100; //rounds result to two decimal points
+
     removeAll();                                    //crear args array
 
-    //if(nextOperator != ''){                       //if user input an operator instead of equals
-        let nextArgument = result;                  
-        args[0].number.push(nextArgument);          //store result as firts argument in args array
-        args[argsIndex].dotUsed = true;               
-        if(nextOperator != ''){  
-            setOperator(nextOperator);              //set operator anew
-            nextOperator = '';                      //reset nextOperator placeholder for a new iteration        
-            argsIndex = 1;                          //set appropriate index for following input
-            renderOutput();
-        }
-        else{ 
-            output.innerText = result;              //else just show the result
-        }    
+    let nextArgument = roundedResult;                  
+    args[0].number.push(nextArgument);              //store result as firts argument in args array
+    args[argsIndex].dotUsed = true;               
+    if(nextOperator != ''){  
+        setOperator(nextOperator);                  //set operator anew
+        nextOperator = '';                          //reset nextOperator placeholder for a new iteration        
+        argsIndex = 1;                              //set appropriate index for following input
+        renderOutput();
+    }
+    else{ 
+        output.innerText = roundedResult;                  //else just show the result
+    }    
 }
 
-//Only for numbers and dot
+//Only for numbers and dots
 function inputCall(){      
     let input = this.innerText;                     //store input
     let currentValue = args[argsIndex];             //copy array object at given slot
@@ -57,9 +55,10 @@ function operationCall(){
     let givenValue = this.innerText;                //Store given value
     (givenValue == 'Del') ? removeSingle()          // if value == Del remove last value from output
     :givenValue =='Clear' ? removeAll()             // if value == Clear remove everything and set anew
-    :(/x|÷|-|\+/.test(givenValue) && operator =='')     ? (setOperator(givenValue), argsIndex = 1)                                                                          //if an operator is given, set it and raise the argsIndex
-    :(/x|÷|-|\+/.test(givenValue) && operator !='')     ? operate(parseFloat(argument1.number.join('')),parseFloat(argument2.number.join('')), nextOperator = givenValue)   //if an operator is given instead of =, do same as above but also set this second oprrator as nextOperator
-    :givenValue == '='                                  ? operate(parseFloat(argument1.number.join('')),parseFloat(argument2.number.join('')))                              //if value == '=' parse numbers and send them forward
+    :(/x|÷|-|\+/.test(givenValue) && operator =='' && output.innerText.length > 0) ? (setOperator(givenValue), argsIndex = 1)                                           //if an operator is given, set it and raise the argsIndex
+    :(/x|÷|-|\+/.test(givenValue) && operator !='' && output.innerText.length > 0 && args[1].number.length == 0) ? (setOperator(givenValue), argsIndex = 1)             //catch if user enters one operator right after another
+    :(/x|÷|-|\+/.test(givenValue) && operator !='') ? operate(parseFloat(argument1.number.join('')),parseFloat(argument2.number.join('')), nextOperator = givenValue)   //catch if anyother other operator than = is given instead after already having two arguments
+    :givenValue == '=' ? operate(parseFloat(argument1.number.join('')),parseFloat(argument2.number.join('')))                                                           //if value == '=' parse numbers and send them forward
     :console.log('error : operationCall');
 }
 
@@ -85,9 +84,9 @@ function removeSingle(){
     renderOutput();
 }
 
-//Set the operator, one for output and one for the compuer to use as sybols used are different
+//Set the operator, one for output and one for the compuer to use as symbols used are different for each
 function setOperator(arg){    
-    (arg == '+' || arg == '-') ? CPUoperator = arg      
+    (arg == '+' || arg == '-') ? CPUoperator = arg
     :arg == 'x' ? CPUoperator = '*'
     :arg == '÷' ? CPUoperator = '/' 
     :console.log('error :  setOperator')    
@@ -99,11 +98,5 @@ function setOperator(arg){
 function renderOutput(){ 
     output.innerText = args[0].number.join('') + operator + args[1].number.join('')
 }
-
-const inputKeys = document.querySelectorAll('.number');
-inputKeys.forEach((key) => key.addEventListener('click', inputCall));
-
-const operatingKeys = document.querySelectorAll('.operator');
-operatingKeys.forEach((key) => key.addEventListener('click', operationCall));
 
 renderOutput();

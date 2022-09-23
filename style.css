@@ -38,7 +38,7 @@ body{
     height: 600px;
     /* background-color: rgb(51, 51, 51); */
     background: rgb(50,50,59);
-background: linear-gradient(0deg, rgba(50,50,59,1) 40%, rgba(76,103,87,1) 100%);
+    background: linear-gradient(0deg, rgba(50,50,59,1) 40%, rgba(76,103,87,1) 100%);
     border-radius: 12px;
     border: 4px solid rgb(255, 255, 255, 0.3);
     border-bottom: 16px solid rgb(255, 255, 255, 0.5);
@@ -54,18 +54,29 @@ background: linear-gradient(0deg, rgba(50,50,59,1) 40%, rgba(76,103,87,1) 100%);
     border: 2px solid black;
     border-radius: 6px;
     box-shadow: 0 50px 150px 10px rgba(128, 128, 128, 0.4) inset;  
-    flex-direction: column;
+    /* flex-direction: column; */
     justify-content: center;
+    justify-items: center;
 }
 
-.output{
+@keyframes blinkBlink{
+    0% {color: rgb(140, 255, 236, 1.0);}
+    50%{color: rgb(140, 255, 236, 0);}
+    /*66%{color: rgb(140, 255, 236, 1.0);}
+    99%{color: rgb(140, 255, 236, 0);}*/
+}
+
+.blink{
+    animation : blinkBlink 1.5s infinite linear;
+}
+
+.output, .blink{
+    margin-top : 80px;
     font-size: 40px;
     color: rgb(140, 255, 236);
     letter-spacing: 1px;
     font-weight:100;
-    text-shadow: 0 0 20px rgba(122, 255, 226, 0.61);
-    /* text-justify:newspaper; */
-    
+    text-shadow: 0 0 20px rgba(122, 255, 226, 0.61);    
 }
 
 .keyboard{
@@ -109,6 +120,16 @@ background: linear-gradient(0deg, rgba(50,50,59,1) 40%, rgba(76,103,87,1) 100%);
     margin: 4px;
 }
 
+.key:hover, .double-key:hover{
+    box-shadow: 0 0 12px 6px  rgb(58, 92, 106) inset;    
+}
+
+.key:active, .double-key:active{
+    box-shadow: 0 0 12px 6px  rgb(51, 137, 174) inset;  
+    border-color:  rgb(51, 137, 174); 
+    border-bottom: 3px;
+}
+
 .key{
     flex: 1;
 }
@@ -123,4 +144,14 @@ background: linear-gradient(0deg, rgba(50,50,59,1) 40%, rgba(76,103,87,1) 100%);
     border-bottom: 7px solid  rgb(248, 142, 71);
     box-shadow: 0 0 6px 3px  rgb(196, 105, 44) inset;
     box-shadow: 0 0 3px 1px black;
+}
+
+.extra:hover{
+    box-shadow: 0 0 12px 6px  rgb(170, 83, 25) inset;   
+}
+
+.extra:active{
+    box-shadow: 0 0 12px 6px  rgb(255, 102, 0) inset;  
+    border-color: rgb(255, 102, 0); 
+    border-bottom: 3px;
 }
