@@ -1,78 +1,88 @@
 const output = document.querySelector('.output');
 const userInput = [];
 
-let dotUsed = false;
-let operatorUsed = false;
-let argument1 = '';
-let userOperator = '';
-let argument2 = '';
+let argsIndex = 0;
+let operator = '';
+let nextOperator = '';
+let CPUoperator = '';
+let argument1 = {
+    number : [],
+    dotUsed : false,
+};
+let argument2 = {
+    number : [],
+    dotUsed : false,
+};
+let result = 0.0;
 
-function operate(arg1,arg2,operator){
-    let result = 0; 
+let args = [ argument1, argument2];
 
-     operator == '+' ? result = arg1 + arg2
-    :operator == '-' ? result = arg1 - arg2
-    :operator == '*' ? result = arg1 * arg2
-    :operator == '/' ? result = arg1 / arg2
-    :console.log('operate() error'), reusl = 'error';
-
-    return result;    
+function operate(arg1,arg2){
+    CPUoperator == '+' ? result = arg1 + arg2
+    :CPUoperator == '-' ? result = arg1 - arg2
+    :CPUoperator == '*' ? result = arg1 * arg2
+    :CPUoperator == '/' ? result = arg1 / arg2
+    :result = 'error';
+    output.innerText = result;
 }
 
-function inputCall(){    
-    let currentInput = this.innerText;                                                                                         
+function inputCall(){      
+    let input = this.innerText;
+    let currentValue = args[argsIndex];
+    (/[0-9]/.test(input) &&  currentValue.number.length <=7) ? currentValue.number.push(input)
+    : (input == '.' && !args[argsIndex].dotUsed) ? (args[argsIndex].number.push(input), args[argsIndex].dotUsed = true)
+    : console.log('Something went wrong || Number too long');
+    renderOutput();                                                                                                                                                         
+}
 
-    (/[0-9]/.test(currentInput) && output.innerHTML.length <=14) ? userInput.push(currentInput)                                                                                                             
-   :(currentInput == '.' && dotUsed == false && userInput.length > 0)           ? (dotUsed = true, userInput.push(currentInput))                                                                                                     
-   :(/x|÷|-|\+/.test(currentInput) && !operatorUsed && userInput.length > 0)    ? (addOperator(), setOperator(currentInput))           
-   :(currentInput == 'Clear')  ? removeAll()
-   :(currentInput == 'Del')    ? removeSingle()
-   : currentInput == '='       ? parseInput()                                                                                                                     
-   :console.log('Go NaN yourfelf');                                                                                                                                                                      
-
-    output.innerText = userInput.join('');
-    console.log('dot used : ' + dotUsed + '// operator used : ' + operatorUsed);                                                                                                                                                              
+function operationCall(){    
+    let givenValue = this.innerText;
+    (givenValue == 'Del') ? removeSingle()
+    :givenValue =='Clear' ? removeAll()
+    :(/x|÷|-|\+/.test(givenValue) && operator =='')     ? (setOperator(givenValue), argsIndex = 1)
+    :(/x|÷|-|\+/.test(givenValue) && operator !='')     ? operate(parseFloat(argument1.number.join('')),parseFloat(argument2.number.join('')))//(setOperator(givenValue), argsIndex = 1)
+    :givenValue == '='                                  ? operate(parseFloat(argument1.number.join('')),parseFloat(argument2.number.join('')))
+    :console.log('operationCall not possible');
 }
 
 function removeAll(){
-    userInput.length = 0;
-    dotUsed = false;
-    operatorUsed = false;  
+    argument1.number.length = 0;
+    argument1.dotUsed = false;
+    argument2.number.length = 0;
+    argument2.dotUsed = false;
+    operator = '';
+    argsIndex = 0;
+    renderOutput()
 }
 
 function removeSingle(){
-    let lastInputKey = userInput[userInput.length-1];
+    let lastOutputValue = output.innerText.slice(-1); //get the last char of a string
 
-    (/x|÷|-|\+/.test(lastInputKey)) ? removeOperator()
-    :(lastInputKey == '.') ? dotUsed = false
-    :console.log('removeSingle()   ///=>' + lastInputKey)
-
-    userInput.pop();
-    output.innerText = userInput.join('');
+    (/[0-9]/.test(lastOutputValue)) ? args[argsIndex].number.pop()
+    :(lastOutputValue == '.') ? (args[argsIndex].number.pop(), args[argsIndex].dotUsed = false)
+    :(/x|÷|-|\+/.test(lastOutputValue)) ? (operator = '', argsIndex = 0)  
+    :console.log(lastValueInArg);
+    renderOutput();
 }
 
-function removeOperator(){
-    operatorUsed = false;
-    dotUsed = true;
+function setOperator(arg){    
+    (arg == '+' || arg == '-') ? CPUoperator = arg
+    :arg == 'x' ? CPUoperator = '*'
+    :arg == '÷' ? CPUoperator = '/' 
+    :console.log('unable to set CPU operator')    
+    operator = arg;
+    renderOutput();
 }
 
-function addOperator(){
-    operatorUsed = true;
-    dotUsed = false    
+function renderOutput(){    
+    output.innerText = args[0].number.join('') + operator + args[1].number.join('')
 }
 
-function setOperator(arg){
-    argument1 = userInput.join(''), userInput.push(' ' + arg + ' ');
-    (arg == '+' || arg == '-') ? userOperator = arg
-    :arg == 'x' ? userOperator = '*'
-    :arg == '÷' ? userOperator = '/'
-    :console.log('setOperator() error');
-}
 
-function parseInput(){
-    let inputString = userInput.join('');
-    console.log(inputString);
-}
-
-const inputKeys = document.querySelectorAll('.key');
+const inputKeys = document.querySelectorAll('.number');
 inputKeys.forEach((key) => key.addEventListener('click', inputCall));
+
+const operatingKeys = document.querySelectorAll('.operator');
+operatingKeys.forEach((key) => key.addEventListener('click', operationCall));
+
+renderOutput();
