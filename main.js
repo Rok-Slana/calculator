@@ -57,8 +57,8 @@ function operationCall(){
     :givenValue =='Clear' ? removeAll()             // if value == Clear remove everything and set anew
     :(/x|÷|-|\+/.test(givenValue) && operator =='' && output.innerText.length > 0) ? (setOperator(givenValue), argsIndex = 1)                                           //if an operator is given, set it and raise the argsIndex
     :(/x|÷|-|\+/.test(givenValue) && operator !='' && output.innerText.length > 0 && args[1].number.length == 0) ? (setOperator(givenValue), argsIndex = 1)             //catch if user enters one operator right after another
-    :(/x|÷|-|\+/.test(givenValue) && operator !='') ? operate(parseFloat(argument1.number.join('')),parseFloat(argument2.number.join('')), nextOperator = givenValue)   //catch if anyother other operator than = is given instead after already having two arguments
-    :givenValue == '=' ? operate(parseFloat(argument1.number.join('')),parseFloat(argument2.number.join('')))                                                           //if value == '=' parse numbers and send them forward
+    :(/x|÷|-|\+/.test(givenValue) && operator !='') ? operate(parseFloat(argument1.number.join('')),parseFloat(argument2.number.join('')), nextOperator = givenValue)   //catch if any-other operator than = is given instead after already having two arguments
+    :(givenValue == '=' && argument2.number.length > 0) ? operate(parseFloat(argument1.number.join('')),parseFloat(argument2.number.join('')))                                                           //if value == '=' parse numbers and send them forward
     :console.log('error : operationCall');
 }
 
